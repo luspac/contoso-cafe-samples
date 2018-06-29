@@ -1,4 +1,4 @@
-const { BotFrameworkAdapter, BotStateSet, FileStorage, ConversationState, UserState } = require('botbuilder');
+const { BotFrameworkAdapter, BotStateSet, ConversationState, UserState, MemoryStorage } = require('botbuilder');
 const { DialogSet, TextPrompt, ChoicePrompt, DatetimePrompt, NumberPrompt, ConfirmPrompt } = require("botbuilder-dialogs");
 const restify = require('restify');
 
@@ -15,7 +15,7 @@ const adapter = new BotFrameworkAdapter({
 });
 
 // Add state middleware
-const storage = new FileStorage("C:/temp");
+const storage = new MemoryStorage();
 const convoState = new ConversationState(storage);
 const userState = new UserState(storage);
 adapter.use(new BotStateSet(convoState, userState));
@@ -26,7 +26,6 @@ server.post('/api/messages', (req, res) => {
     adapter.processActivity(req, res, async (context) => {
         if (context.activity.type !== 'message') {
             // Handle any non-message activity.
-            // await context.sendActivity(`[${context.activity.type} event detected]`);
             switch (context.activity.type) {
                 // Not all channels send a ConversationUpdate activity.
                 // However, both the Emulator and WebChat do.
@@ -34,7 +33,7 @@ server.post('/api/messages', (req, res) => {
                     // If a user is being added to the conversation, send them an initial greeting.
                     if (context.activity.membersAdded[0].name !== 'Bot') {
                         await context.sendActivity("Hello, I'm the Contoso Cafe bot.")
-                        await context.sendActivity(`How can I help you? (Type "book a table" to set up a table reservation.)`)
+                        await context.sendActivity("How can I help you? (Type `book a table` to set up a table reservation.)")
                     }
             }
         } else {
@@ -75,13 +74,13 @@ server.post('/api/messages', (req, res) => {
 
                     case "help":
                         // Provide some guidance to the user.
-                        await context.sendActivity(`Type "book a table" to make a reservation.`);
+                        await context.sendActivity("Type `book a table` to make a reservation.");
                         break;
 
                     default:
                         // Provide a default response for anything we didn't understand.
                         await context.sendActivity("I'm sorry; I do not understand.");
-                        await context.sendActivity(`Type "book a table" to make a reservation.`);
+                        await context.sendActivity("Type `book a table` to make a reservation.");
                         break;
                 }
             }

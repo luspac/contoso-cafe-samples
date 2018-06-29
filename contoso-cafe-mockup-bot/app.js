@@ -30,7 +30,7 @@ server.post('/api/messages', (req, res) => {
                 // If a user is being added to the conversation, send them an initial greeting.
                 if(context.activity.membersAdded[0].name !== 'Bot'){
                     await context.sendActivity("Hello, I'm the Contoso Cafe bot.")
-                    await context.sendActivity(`How can I help you? (Type "book a table" to set up a table reservation.)`)
+                    await context.sendActivity("How can I help you? (Type `book a table` to set up a table reservation.)")
                 }
                 
             }
@@ -57,13 +57,13 @@ server.post('/api/messages', (req, res) => {
 
                 case "help":
                     // Provide some guidance to the user.
-                    await context.sendActivity(`Type "book a table" to make a reservation.`);
+                    await context.sendActivity("Type `book a table` to make a reservation.");
                     break;
 
                 default:
                     // Provide a default response for anything we didn't understand.
                     await context.sendActivity("I'm sorry; I do not understand.");
-                    await context.sendActivity(`Type "book a table" to make a reservation.`);
+                    await context.sendActivity("Type `book a table` to make a reservation.");
                     break;
 
             }
